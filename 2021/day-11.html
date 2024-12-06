@@ -1,0 +1,67 @@
+<script>
+	const input = `8826876714
+3127787238
+8182852861
+4655371483
+3864551365
+1878253581
+8317422437
+1517254266
+2621124761
+3473331514`;
+
+	let matrix = input.split("\n").map(r => r.split("").map(c => parseInt(c, 10)));
+
+	const steps = 1000;
+	let flashes = 0;
+	let flashed;
+
+	function stepIt(r, c) {
+		// console.log(JSON.parse(JSON.stringify(r)));
+		// console.log(JSON.parse(JSON.stringify(c)));
+		// console.log(JSON.parse(JSON.stringify(flashed)));
+		// console.log(JSON.parse(JSON.stringify(matrix)));
+		if (matrix[r] && matrix[r][c] != undefined) {
+			switch (matrix[r][c]) {
+				case 9:
+					matrix[r][c] = 0;
+					flashes++;
+					flashed[r][c] = 1;
+					stepIt(r - 1, c - 1);
+					stepIt(r - 1, c);
+					stepIt(r - 1, c + 1);
+					stepIt(r, c - 1);
+					stepIt(r, c + 1);
+					stepIt(r + 1, c - 1);
+					stepIt(r + 1, c);
+					stepIt(r + 1, c + 1);
+					break;
+				case 0:
+					if (!flashed[r][c]) {
+						matrix[r][c]++;
+					}
+					break;
+				default:
+					matrix[r][c]++;
+					break;
+			}
+		}
+	}
+
+	for (let step = 0; step < steps; step++) {
+		flashed = Array(10).fill(0).map(() => Array(10).fill(0));
+		for (let [r, row] of matrix.entries()) {
+			for (let [c, col] of row.entries()) {
+				stepIt(r, c)
+			}
+		}
+		if (flashed.reduce((a, b) => a + b.filter(f => f == 1).length, 0) == 100) {
+			console.log(step + 1);
+			break;
+		}
+		// console.log(JSON.parse(JSON.stringify(flashed)));
+		// console.log(JSON.parse(JSON.stringify(matrix)));
+		// console.log(`flashes: ${flashes}`);
+	}
+
+</script>

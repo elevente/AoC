@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>day 10</title>
+	<style>
+		body {
+			font-family: monospace;
+		}
+	</style>
+</head>
+<body>
+<script type="text/javascript">
+	const input = `addx 1
+noop
+addx 5
+addx -1
+noop
+addx 5
+noop
+addx -2
+addx 8
+addx -1
+addx 7
+noop
+addx -1
+addx 4
+noop
+addx 1
+noop
+noop
+addx 6
+addx -1
+addx 3
+addx 2
+addx -5
+addx -27
+addx -3
+addx 2
+noop
+addx 3
+addx 2
+addx 5
+addx 2
+addx 3
+noop
+addx 5
+noop
+noop
+addx -2
+addx 2
+noop
+addx -13
+addx 23
+noop
+noop
+addx -9
+addx -18
+addx 30
+noop
+addx -34
+addx 3
+addx -2
+noop
+addx 1
+addx 6
+noop
+addx 28
+addx -25
+addx 5
+addx 5
+addx -11
+addx 9
+addx 4
+noop
+addx -26
+addx 34
+noop
+addx -2
+noop
+noop
+addx 4
+addx -34
+noop
+addx 11
+addx -7
+addx 7
+addx -9
+addx 5
+addx 5
+addx 2
+addx 1
+noop
+noop
+noop
+addx 22
+addx -17
+addx 2
+noop
+addx -19
+addx 29
+noop
+addx -2
+noop
+addx 3
+noop
+noop
+addx -36
+addx 7
+noop
+noop
+addx 3
+addx -2
+addx 2
+addx 5
+addx 2
+addx 3
+noop
+addx 2
+addx 11
+addx -10
+addx 2
+addx 7
+noop
+addx -2
+addx 5
+addx 2
+addx -36
+addx 1
+addx -1
+addx 3
+addx 4
+addx -1
+addx 5
+noop
+noop
+noop
+noop
+noop
+addx 3
+addx 5
+addx 15
+addx -13
+addx 6
+addx -3
+addx -1
+addx 9
+addx -1
+addx 5
+noop
+addx 1
+noop
+noop
+noop
+noop`;
+	const commands = input.split("\n").map(i => i === "noop" ? ({ command: i }) : ({ command: i.split(" ")[0], value: parseInt(i.split(" ")[1], 10)}));
+	const commandCycles = {
+		noop: 1,
+		addx: 2
+	}
+	let registerX = 1;
+	let currentCycle = 0;
+	const checkCycles = [20, 60, 100, 140, 180, 220];
+	let signals = [];
+
+	for (let i = 0; i < commands.length; i++) {
+		commands[i].registerX = registerX;
+		commands[i].startCycle = currentCycle;
+		const currentCommandCycle = commandCycles[commands[i].command];
+		currentCycle += currentCommandCycle;
+		commands[i].endCycle = currentCycle;
+		if(commands[i].command === "addx") {
+			registerX += commands[i].value;
+		}
+	}
+
+	// for (let j = 0; j < checkCycles.length; j++) {
+	// 	signals.push({ ...commands.findLast(command => command.startCycle < checkCycles[j]), findCycle: checkCycles[j] });
+	// }
+
+	// const signalSum = signals.reduce((acc, curr) => acc + (curr.registerX * curr.findCycle), 0);
+
+	// document.body.innerHTML = signalSum;
+
+	let pixels = [];
+	for (let j = 0; j < commands.length; j++) {
+		const currentCommand = commands[j];
+		for (let cycle = currentCommand.startCycle; cycle < currentCommand.endCycle; cycle++) {
+			// console.log(`cycle: ${cycle}, registerX: ${currentCommand.registerX}`);
+			if (Math.abs((cycle % 40) - currentCommand.registerX) <= 1) {
+				pixels.push("#");
+			} else {
+				pixels.push(".");
+			}
+		}
+	}
+
+	var div = document.createElement("div");
+	for (let k = 0; k < pixels.length; k += 40) {
+		div.appendChild(document.createTextNode(pixels.slice(k, k + 40).join("")));
+		div.appendChild(document.createElement("br"));
+	}
+	document.body.appendChild(div);
+</script>
+</body>
+</html>
